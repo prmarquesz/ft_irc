@@ -7,7 +7,7 @@ CXX  = g++
 
 RM  = rm -f
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -std=c++98
 
 all:		$(NAME)
 
