@@ -1,0 +1,52 @@
+#include <Server.hpp>
+
+std::map<std::string, Channel>::iterator Server::getChannelByName(std::string channelName) {
+	std::string upperInput = toIrcUpperCase(channelName);
+
+	LOGGER.info("getChannelByName", "Looking for channel " + upperInput);
+	std::map<std::string, Channel>::iterator it = channels.begin();
+	while (it != channels.end()) {
+		std::string upperChannel = toIrcUpperCase((*it).first);
+		if (upperInput == upperChannel) {
+			return it;
+		}
+		it++;
+	}
+	return channels.end();
+};
+
+void Server::removeClientFromChannel(Client &client, Channel &channel, std::string message) {
+	LOGGER.info("removeClientFromChannel", "Removing client " + client.getNickname() + " from channel " + channel.getName());
+	channel.removeClient(client);
+	client.removeChannel(channel);
+	if (channel.getClients().size() == 0) {
+		this->channels.erase(toIrcUpperCase(channel.getName()));
+	} else {
+		std::stringstream ss;
+
+		ss << ":";
+		ss << client.getNickname();
+		ss << " PART";
+		ss << " " << channel.getName();
+		ss << " " << message;
+		ss << "\r\n";
+
+		std::map<Client *, uint>::iterator itb = channel.getClients().begin();
+		std::map<Client *, uint>::iterator ite = channel.getClients().end();
+
+		for (; itb != ite; itb++) {
+			itb->first->setSendData(ss.str());
+		}
+	}
+};
+
+void Server::broadcastMessage(int fd, std::string message) {
+	std::map<int, Client>::iterator it = clients.begin();
+
+	LOGGER.info("broadcastMessage", "Broadcasting message to all clients except fd " + std::to_string(fd));
+	for (; it != clients.end(); it++) {
+		if ((it->first) != fd) {
+			(it->second).setSendData(message);
+		}
+	}
+}
