@@ -4,6 +4,7 @@ bool Server::online = true;
 
 Server::~Server() {
 	close(socket);
+	LOGGER.info("~Server", "Shutting down server...");
 }
 
 bool Server::isPortInvalid(int port) {
