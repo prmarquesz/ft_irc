@@ -6,7 +6,7 @@
 #    By: proberto <proberto@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/10 11:50:51 by proberto          #+#    #+#              #
-#    Updated: 2023/10/12 19:28:20 by proberto         ###   ########.fr        #
+#    Updated: 2023/10/15 14:11:46 by proberto         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,11 @@ HEADER = include
 SRC_DIR = src
 OBJ_DIR = obj
 
-SRCS = $(addprefix $(SRC_DIR)/, main.cpp)
+SRCS = $(addprefix $(SRC_DIR)/, main.cpp Server.cpp ServerEventHandler.cpp) 		\
+       $(addprefix $(SRC_DIR)/, ServerConnectionManager.cpp ServerChannelManager.cpp) 			\
+       $(addprefix $(SRC_DIR)/, ServerCommands.cpp ServerCommandExecutor.cpp ) 		\
+       $(addprefix $(SRC_DIR)/, ServerIO.cpp ServerReplies.cpp ServerUtils.cpp)	\
+       $(addprefix $(SRC_DIR)/, Channel.cpp Client.cpp Logger.cpp utils.cpp)
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
