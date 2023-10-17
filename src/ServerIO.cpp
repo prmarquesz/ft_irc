@@ -26,8 +26,8 @@ std::string Server::receiveDataFromSocket(int fd) {
 void Server::sendDataThroughSocket(Client &client) {
 	int	bytesSent;
 
-	LOGGER.info("sendDataThroughSocket", "Sending data to fd " + std::to_string(client.getFd()));
 	if (client.getSendData().size()) {
+		LOGGER.info("sendDataThroughSocket", "Sending data to fd " + std::to_string(client.getFd()));
 		bytesSent = send(client.getFd(), client.getSendData().c_str(), client.getSendData().size(), 0);
 		if (bytesSent < 0) {
 			LOGGER.error("Failed", "");
