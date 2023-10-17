@@ -8,7 +8,9 @@ void Server::pass(Client &client, Command &command) {
 	} else if (client.getRegistration() & PASS_FLAG) {
 		client.setSendData(alreadyregistered(client));
 		return;
-	} else if (command.args[0].substr(1) != passwd) {
+	} else if (command.args[0] != passwd) {
+		LOGGER.debug("pass", command.args[0]);
+		LOGGER.debug("pass", passwd);
 		client.setSendData(passwdmismatch(client));
 		return;
 	}
