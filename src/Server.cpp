@@ -61,11 +61,11 @@ void Server::setupSocket() {
 
 void Server::startServer() {
 	int				events;
-	struct pollfd	server = {0, POLLIN, 0};
 
-	LOGGER.info("startServer", "Starting server...");
 	setupSocket();
+	struct pollfd server = {socket, POLLIN, 0};
 	pollFds.push_back(server);
+	LOGGER.info("startServer", "Starting server...");
 	while (online) {
 		events = poll(pollFds.data(), static_cast<nfds_t>(pollFds.size()), -1);
 		if (events >= 0) {
