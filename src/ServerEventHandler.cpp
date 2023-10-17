@@ -1,7 +1,7 @@
 #include <Server.hpp>
 
 void Server::handleServerEvents() {
-	if (pollFds.at(1).revents & POLLIN) {
+	if (pollFds.at(0).revents & POLLIN) {
 		LOGGER.info("serverEventHandling", "New server event caught");
 		addNewClient();
 	}
