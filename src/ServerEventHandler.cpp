@@ -1,4 +1,13 @@
 #include <Server.hpp>
+#include <sstream>
+
+template<typename T>
+std::string to_string(const T & value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
 
 void Server::handleServerEvents() {
 	if (pollFds.at(1).revents & POLLIN) {
@@ -35,7 +44,9 @@ void Server::handleDisconnectionEvents() {
 
 	for (; it != clients.rend(); it++) {
 		if ((it->second).getToDisconnect()) {
-			LOGGER.info("disconnectHandling", "Disconnecting client on fd " + std::to_string(it->first));
+			std::ostringstream logMessage;
+			logMessage << "Disconnecting client on fd " << it->first;
+			LOGGER.info("disconnectHandling", logMessage.str());
 			ejectClient(it->first, QUITED);
 			break;
 		}

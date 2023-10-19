@@ -21,7 +21,7 @@
 #include <Channel.hpp>
 #include <Logger.hpp>
 #include <utils.hpp>
-
+#include "Server.tpp"
 
 #define LOSTCONNECTION 0
 #define QUITED 1
@@ -154,6 +154,7 @@ class Server {
 		bool 										evalChanMode(Client &client, std::vector<std::string> args);
 		bool 										evalUserMode(Client &client, std::vector<std::string> args);
 		Client 										*getClientByNick(std::string nickname);
+		template <typename T> void 					to_string(const T & value);
 };
 
 void 												signalHandler(int signal);
