@@ -8,7 +8,9 @@ void Server::executeCommands(Client &client, std::vector<Command> &commands) {
 		if (client.getNickname().size() > 0) {
 			nick = client.getNickname();
 		}
-		LOGGER.info("executeCommands", "Client " + nick + " on fd " + std::to_string(client.getFd()) + " sent: " + (*it).cmd);
+		std::ostringstream logMessage;
+		logMessage << "Client " << nick << " on fd " << client.getFd() << " sent: " << (*it).cmd ;
+		LOGGER.info("executeCommands", logMessage.str());
 		executeCommand(client, (*it));
 	}
 }
