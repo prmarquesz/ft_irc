@@ -1,14 +1,6 @@
 #include <Server.hpp>
 #include <sstream>
 
-template<typename T>
-std::string to_string(const T & value) {
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
-
-
 void Server::handleServerEvents() {
 	if (pollFds.at(1).revents & POLLIN) {
 		LOGGER.info("serverEventHandling", "New server event caught");

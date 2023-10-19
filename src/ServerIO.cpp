@@ -7,7 +7,7 @@ std::string Server::receiveDataFromSocket(int fd) {
 	std::string bufferStr = "";
 	
 	std::ostringstream logMessage;
-	logMessage << "Receiving data from fd " + fd;
+	logMessage << "Receiving data from fd " << fd;
 	LOGGER.info("receiveDataFromSocket", logMessage.str());
 	while (keepReading) {
 		std::memset(buffer, 0, BUFFER_SIZE);
