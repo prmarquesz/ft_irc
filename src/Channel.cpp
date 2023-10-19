@@ -53,8 +53,10 @@ Client &Channel::getCreator() { return *creator; };
 
 bool Channel::toggleMode(char mode, bool on) {
 	std::size_t before = modes.size();
+	std::ostringstream logMessage;
 
-	LOGGER.info("toggleMode", "Toggling mode " + std::string(1, mode) + " to " + std::to_string(on));
+	logMessage << "Toggling mode " << mode << " to " <<on;
+	LOGGER.info("toggleMode", logMessage.str());
 	if (on)
 		modes.insert(mode);
 	else
@@ -86,7 +88,9 @@ void		 Channel::setUserLimit(unsigned int limit) { userLimit = limit; };
 unsigned int Channel::getUserLimit() const { return userLimit; };
 
 bool Channel::setOperator(std::string clientNickname, bool newValue) {
-	LOGGER.info("setOperator", "Setting operator status of " + clientNickname + " to " + std::to_string(newValue));
+	std::ostringstream logMessage;
+	logMessage << "Setting operator status of " << clientNickname << " to " << newValue;
+	LOGGER.info("setOperator", logMessage.str());
 	std::map<Client *, unsigned int>::iterator it =
 		getClientByNick(clientNickname);
 	if (it != clients.end()) {
@@ -100,7 +104,9 @@ bool Channel::setOperator(std::string clientNickname, bool newValue) {
 };
 
 void Channel::setSpeaker(std::string clientNickname, bool newValue) {
-	LOGGER.info("setSpeaker", "Setting speaker status of " + clientNickname + " to " + std::to_string(newValue));
+	std::ostringstream logMessage;
+	logMessage << "Setting speaker status of " << clientNickname << " to " << newValue ;
+	LOGGER.info("setSpeaker", logMessage.str());
 	std::map<Client *, unsigned int>::iterator it =
 		getClientByNick(clientNickname);
 	if (it != clients.end()) {
