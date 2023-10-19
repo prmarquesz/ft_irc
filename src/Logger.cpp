@@ -21,10 +21,10 @@ Logger &Logger::operator=(Logger const &rhs) {
 }
 
 std::string Logger::date(void) {
-	std::time_t currentTime = std::time(NULL);
-	char timestamp[100];
-	std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", std::localtime(&currentTime));
-	return timestamp;
+    time_t currentTime = time(NULL);
+    char timestamp[100];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&currentTime));
+    return timestamp;
 }
 
 void Logger::debug(std::string method, std::string msg) {
