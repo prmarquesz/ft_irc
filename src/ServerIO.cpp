@@ -30,8 +30,8 @@ void Server::sendDataThroughSocket(Client &client) {
 
 	std::ostringstream logMessage;
 	logMessage << "Sending data to fd " << client.getFd();
-	LOGGER.info("sendDataThroughSocket", logMessage.str());
 	if (client.getSendData().size()) {
+		LOGGER.info("sendDataThroughSocket", logMessage.str());
 		bytesSent = send(client.getFd(), client.getSendData().c_str(), client.getSendData().size(), 0);
 		if (bytesSent < 0) {
 			LOGGER.error("Failed", "");

@@ -2,7 +2,7 @@
 #include <sstream>
 
 void Server::handleServerEvents() {
-	if (pollFds.at(1).revents & POLLIN) {
+	if (pollFds.at(0).revents & POLLIN) {
 		LOGGER.info("serverEventHandling", "New server event caught");
 		addNewClient();
 	}
@@ -18,7 +18,7 @@ void Server::handleClientEvents() {
 			std::vector<Command> commands = parseCommands(data);
 			executeCommands(client, commands);
 		} else if ((*it).revents & POLLOUT) {
-			LOGGER.info("clientEventHandling", "POLLOUT caught");
+			// LOGGER.info("clientEventHandling", "POLLOUT caught");
 			sendDataThroughSocket(client);
 		} else if ((*it).revents & POLLERR) {
 			LOGGER.info("clientEventHandling", "POLLERR caught");
