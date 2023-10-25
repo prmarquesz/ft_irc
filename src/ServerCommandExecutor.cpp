@@ -16,17 +16,17 @@ void Server::executeCommands(Client &client, std::vector<Command> &commands) {
 }
 
 void Server::executeCommand(Client &client, Command &command) {
-	if (command.cmd == "NICK") {
+	if (command.cmd == "NICK") { 		// dont update on front
 		nick(client, command);
-	} else if (command.cmd == "PASS") {
+	} else if (command.cmd == "PASS") { // ok cmd
 		pass(client, command);
-	} else if (command.cmd == "USER") {
+	} else if (command.cmd == "USER") { // ok cmd
 		user(client, command);
 	} else if (command.cmd == "OPER") {
 		oper(client, command);
-	} else if (command.cmd == "JOIN") {
+	} else if (command.cmd == "JOIN") { // ok
 		join(client, command);
-	} else if (command.cmd == "QUIT") {
+	} else if (command.cmd == "QUIT") { // ok
 		quit(client, command);
 	} else if (command.cmd == "PING") {
 		ping(client, command);
@@ -34,26 +34,26 @@ void Server::executeCommand(Client &client, Command &command) {
 		mode(client, command);
 	} else if (command.cmd == "PRIVMSG") {
 		privmsg(client, command);
-	} else if (command.cmd == "TOPIC") {
+	} else if (command.cmd == "TOPIC") { // ok
 		topic(client, command);
 	} else if (command.cmd == "NOTICE") {
 		notice(client, command);
 	} else if (command.cmd == "PART") {
 		part(client, command);
-	} else if (command.cmd == "WHO") {
+	} else if (command.cmd == "WHO") { // segfault
 		who(client, command);
 	} else if (command.cmd == "WHOIS") {
 		whois(client, command);
-	} else if (command.cmd == "KICK") {
+	} else if (command.cmd == "KICK") { // segfault
 		kick(client, command);
-	} else if (command.cmd == "INVITE") {
+	} else if (command.cmd == "INVITE") { // ok
 		invite(client, command);
 	} else {
 		client.setSendData(unknowncommand(client, command.cmd));
 	}
 
-	if (client.getRegistration() == (PASS_FLAG | USER_FLAG | NICK_FLAG) &&
-		!client.getWelcome()) {
+	if (client.getRegistration() == (PASS_FLAG | USER_FLAG | NICK_FLAG)
+		&& !client.getWelcome()) {
 		client.setWelcome(true);
 		client.setSendData(welcome(client));
 		client.setSendData(motd(client));

@@ -48,6 +48,8 @@ void Server::nick(Client &client, Command &command) {
 	}
 	client.setNickname(command.args[0]);
 	client.setRegistration(NICK_FLAG);
+	client.setSendData(changednickname(client, client.getNickname()));
+	LOGGER.info("nick", "Client " + client.getNickname() + " changed nickname");
 }
 
 void Server::oper(Client &client, Command &command) {
@@ -159,7 +161,6 @@ void Server::join(Client &client, Command &command) {
 		ch.removeInvited(client.getNickname());
 		return successfulJoin(client, ch);
 	}
-
 	if (sentPassword) {
 		if (!ch.evalPassword(command.args[1]))
 			return client.setSendData(badchannelkey(client, ch.getName()));

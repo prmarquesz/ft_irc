@@ -65,6 +65,18 @@ std::string Server::nicknameinuse(Client &client, std::string nickname) {
 
 	return ss.str();
 }
+
+std::string Server::changednickname(Client &client, std::string nickname) {
+	std::stringstream ss;
+	
+	LOGGER.info("welcome", "Sending welcome response to " + nickname);
+	ss << ":localhost 001 " << client.getNickname();
+	ss << " :Welcome to the FT_IRC server " << client.getNickname();
+	ss << "\r\n";
+
+	return ss.str();
+}
+
 std::string Server::welcome(Client &client) {
 	std::stringstream ss;
 
