@@ -30,7 +30,8 @@ void Channel::removeClient(Client &client) {
 	if (creator == &client) {
 		creator = NULL;
 	}
-	clients.erase(&client);
+	if (clients.size() > 1)
+		clients.erase(&client);
 	if (clients.size() > 0) {
 		asureOperator();
 	}

@@ -22,6 +22,8 @@
 #include <Logger.hpp>
 #include <utils.hpp>
 
+#include <fcntl.h>
+
 #define LOSTCONNECTION 0
 #define QUITED 1
 #define KICKED 2
