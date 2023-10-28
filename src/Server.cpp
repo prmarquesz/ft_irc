@@ -65,8 +65,8 @@ void Server::startServer() {
 	int				events;
 	struct pollfd	server = {socket, POLLIN, 0};
 
-	LOGGER.info("startServer", "Starting server...");
 	pollFds.push_back(server);
+	LOGGER.info("startServer", "Starting server...");
 	while (online) {
 		events = poll(pollFds.data(), static_cast<nfds_t>(pollFds.size()), -1);
 		if (events >= 0) {
