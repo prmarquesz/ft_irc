@@ -424,6 +424,7 @@ void Server::channelMode(Client &client, Command &command) {
 				return (client.setSendData(needmoreparams(client, "MODE")));
 			}
 			ch.setUserLimit(lim);
+			ch.toggleMode('l', on);
 			modesChanged += "l " + command.args[2];
 			break;
 		case 'o':
