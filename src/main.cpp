@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
     std::string passwd;
     int         port;
 
-    if (argc != 3) throw std::invalid_argument("Invalid number of arguments");
     try {
+        if (argc != 3) throw std::invalid_argument("Invalid number of arguments");
         port = std::atoi(argv[1]);
         passwd = argv[2];
         Server server(passwd, port);
