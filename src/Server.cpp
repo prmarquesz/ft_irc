@@ -4,6 +4,7 @@ bool Server::online = true;
 
 Server::~Server() {
 	close(socket);
+	pollFds.clear();
 	LOGGER.info("~Server", "Shutting down server...");
 }
 
