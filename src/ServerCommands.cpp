@@ -584,8 +584,8 @@ void Server::kick(Client &client, Command &command) {
 	}
 	if (!(issuer->second & USER_OPERATOR))
 		return client.setSendData(chanoprivsneeded((*issuer->first), (*ch)));
-	ch->removeClient(*target->first);
 	ch->broadcast(client, kicksuccess(client, *ch, target->first->getNickname()), true);
+	ch->removeClient(*target->first);
 	return;
 };
 
