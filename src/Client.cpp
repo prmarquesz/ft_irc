@@ -1,11 +1,13 @@
 #include <Client.hpp>
 
 Client::~Client() {
+	Logger("Client").debug("~Client", "chegou aqui sem seg fault antes");
 	std::size_t i = 0;
 	while (i < channels.size()) {
 		channels.at(i)->removeClient((*this));
 		i++;
 	}
+	Logger("Client").debug("~Cliente", "chegou aqui sem seg fault depois");
 }
 
 Client::Client() {

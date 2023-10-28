@@ -3,6 +3,11 @@
 bool Server::online = true;
 
 Server::~Server() {
+	for (std::vector<pollfd>::iterator it = pollFds.begin(); it != pollFds.end(); it++) {
+		if (fcntl((*it).fd, F_GETFD) == false) {
+			close((*it).fd);
+		}
+    }
 	close(socket);
 	pollFds.clear();
 	LOGGER.info("~Server", "Shutting down server...");

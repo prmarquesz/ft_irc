@@ -1,6 +1,10 @@
 #include <Channel.hpp>
 
-Channel::~Channel(void) {}
+Channel::~Channel(void) {
+	LOGGER.info("~Channel", "Deleting channel " + name);
+    clients.clear();
+    invited.clear();
+}
 
 Channel::Channel(void) {
 	host		= "localhost";
@@ -30,7 +34,7 @@ void Channel::removeClient(Client &client) {
 	if (creator == &client) {
 		creator = NULL;
 	}
-	if (clients.size() > 1)
+	//if (clients.size() > 1)
 		clients.erase(&client);
 	if (clients.size() > 0) {
 		asureOperator();
@@ -74,14 +78,17 @@ void Channel::initialize(std::string name, std::string password, Client &op) {
 	this->clients.insert(std::make_pair(&op, USER_OPERATOR));
 	this->initialized = true;
 	this->modes.insert('t');
+	this->creator = &op;
 }
 
 void Channel::initialize(std::string name, Client &op) {
 	LOGGER.info("initialize", "Initializing channel " + name);
 	this->name = name;
-	this->clients.insert(std::make_pair(&op, USER_OPERATOR));
+	this->clients.insert(std::make_pair(&op, 0));
 	this->initialized = true;
 	this->modes.insert('t');
+	this->creator = &op;
+	setOperator(op.getNickname(), true);
 }
 
 void		 Channel::setUserLimit(unsigned int limit) { userLimit = limit; };
