@@ -197,7 +197,7 @@ std::string Server::namreply(Client &client, Channel &channel, bool found) {
 		Client *creator = &channel.getCreator();
 
 		ss << ":localhost 353 " << client.getNickname();
-		ss << " = :" << channel.getName() << " ";
+		ss << " = " << channel.getName() << " :";
 		if (creator) {
 			LOGGER.debug("namreply", "criador é " + creator->getNickname());
 			ss << "!" << creator->getNickname() << " ";
