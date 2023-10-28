@@ -32,6 +32,6 @@
 *.app
 
 .vscode
-client
+client*
 obj
 ircserv

@@ -16,7 +16,9 @@ std::map<std::string, Channel>::iterator Server::getChannelByName(std::string ch
 };
 
 void Server::removeClientFromChannel(Client &client, Channel &channel, std::string message) {
-	LOGGER.info("removeClientFromChannel", "Removing client " + client.getNickname() + " from channel " + channel.getName());
+	std::ostringstream logMessage;
+	logMessage << "Removing client " << client.getNickname() << " from channel " << channel.getName();
+	LOGGER.info("removeClientFromChannel", logMessage.str());
 	channel.removeClient(client);
 	client.removeChannel(channel);
 	if (channel.getClients().size() == 0) {
@@ -42,8 +44,9 @@ void Server::removeClientFromChannel(Client &client, Channel &channel, std::stri
 
 void Server::broadcastMessage(int fd, std::string message) {
 	std::map<int, Client>::iterator it = clients.begin();
-
-	LOGGER.info("broadcastMessage", "Broadcasting message to all clients except fd " + std::to_string(fd));
+	std::ostringstream logMessage;
+	logMessage << "Broadcasting message to all clients except fd " << fd;
+	LOGGER.info("broadcastMessage", logMessage.str());
 	for (; it != clients.end(); it++) {
 		if ((it->first) != fd) {
 			(it->second).setSendData(message);

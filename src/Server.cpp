@@ -4,6 +4,7 @@ bool Server::online = true;
 
 Server::~Server() {
 	close(socket);
+	pollFds.clear();
 	LOGGER.info("~Server", "Shutting down server...");
 }
 
@@ -60,10 +61,10 @@ void Server::setupSocket() {
 }
 
 void Server::startServer() {
-	int				events;
-
 	setupSocket();
-	struct pollfd server = {socket, POLLIN, 0};
+	int				events;
+	struct pollfd	server = {socket, POLLIN, 0};
+
 	pollFds.push_back(server);
 	LOGGER.info("startServer", "Starting server...");
 	while (online) {

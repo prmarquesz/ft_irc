@@ -5,8 +5,10 @@ std::string Server::receiveDataFromSocket(int fd) {
 	ssize_t bytesReceived;
 	bool	keepReading = true;
 	std::string bufferStr = "";
-
-	LOGGER.info("receiveDataFromSocket", "Receiving data from fd " + std::to_string(fd));
+	
+	std::ostringstream logMessage;
+	logMessage << "Receiving data from fd " << fd;
+	LOGGER.info("receiveDataFromSocket", logMessage.str());
 	while (keepReading) {
 		std::memset(buffer, 0, BUFFER_SIZE);
 		bytesReceived = recv(fd, buffer, BUFFER_SIZE, 0);
@@ -26,8 +28,10 @@ std::string Server::receiveDataFromSocket(int fd) {
 void Server::sendDataThroughSocket(Client &client) {
 	int	bytesSent;
 
+	std::ostringstream logMessage;
+	logMessage << "Sending data to fd " << client.getFd();
 	if (client.getSendData().size()) {
-		LOGGER.info("sendDataThroughSocket", "Sending data to fd " + std::to_string(client.getFd()));
+		LOGGER.info("sendDataThroughSocket", logMessage.str());
 		bytesSent = send(client.getFd(), client.getSendData().c_str(), client.getSendData().size(), 0);
 		if (bytesSent < 0) {
 			LOGGER.error("Failed", "");

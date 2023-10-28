@@ -22,7 +22,6 @@
 #include <Logger.hpp>
 #include <utils.hpp>
 
-
 #define LOSTCONNECTION 0
 #define QUITED 1
 #define KICKED 2
@@ -99,6 +98,7 @@ class Server {
 		/* replies */
 		std::string 								motd(Client &client);
 		std::string 								welcome(Client &client);
+		std::string 								changednickname(Client &client, std::string nickname); 
 		std::string 								needmoreparams(Client &client, std::string command);
 		std::string 								alreadyregistered(Client &client);
 		std::string 								passwdmismatch(Client &client);

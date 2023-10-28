@@ -9,8 +9,6 @@ void Server::pass(Client &client, Command &command) {
 		client.setSendData(alreadyregistered(client));
 		return;
 	} else if (command.args[0] != passwd) {
-		LOGGER.debug("pass", command.args[0]);
-		LOGGER.debug("pass", passwd);
 		client.setSendData(passwdmismatch(client));
 		return;
 	}
@@ -50,6 +48,8 @@ void Server::nick(Client &client, Command &command) {
 	}
 	client.setNickname(command.args[0]);
 	client.setRegistration(NICK_FLAG);
+	client.setSendData(changednickname(client, client.getNickname()));
+	LOGGER.info("nick", "Client " + client.getNickname() + " changed nickname");
 }
 
 void Server::oper(Client &client, Command &command) {
@@ -161,7 +161,6 @@ void Server::join(Client &client, Command &command) {
 		ch.removeInvited(client.getNickname());
 		return successfulJoin(client, ch);
 	}
-
 	if (sentPassword) {
 		if (!ch.evalPassword(command.args[1]))
 			return client.setSendData(badchannelkey(client, ch.getName()));
@@ -425,6 +424,7 @@ void Server::channelMode(Client &client, Command &command) {
 				return (client.setSendData(needmoreparams(client, "MODE")));
 			}
 			ch.setUserLimit(lim);
+			ch.toggleMode('l', on);
 			modesChanged += "l " + command.args[2];
 			break;
 		case 'o':

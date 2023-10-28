@@ -1,4 +1,5 @@
 #include <Server.hpp>
+#include <sstream>
 
 void Server::handleServerEvents() {
 	if (pollFds.at(0).revents & POLLIN) {
@@ -17,7 +18,7 @@ void Server::handleClientEvents() {
 			std::vector<Command> commands = parseCommands(data);
 			executeCommands(client, commands);
 		} else if ((*it).revents & POLLOUT) {
-			LOGGER.info("clientEventHandling", "POLLOUT caught");
+			// LOGGER.info("clientEventHandling", "POLLOUT caught");
 			sendDataThroughSocket(client);
 		} else if ((*it).revents & POLLERR) {
 			LOGGER.info("clientEventHandling", "POLLERR caught");
@@ -35,7 +36,9 @@ void Server::handleDisconnectionEvents() {
 
 	for (; it != clients.rend(); it++) {
 		if ((it->second).getToDisconnect()) {
-			LOGGER.info("disconnectHandling", "Disconnecting client on fd " + std::to_string(it->first));
+			std::ostringstream logMessage;
+			logMessage << "Disconnecting client on fd " << it->first;
+			LOGGER.info("disconnectHandling", logMessage.str());
 			ejectClient(it->first, QUITED);
 			break;
 		}

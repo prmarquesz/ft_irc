@@ -18,7 +18,9 @@ void Server::addNewClient(void) {
 	clients.insert(std::pair<int, Client>(fd, client));
 	pollfd pollFd = {fd, POLLIN | POLLOUT | POLLERR | POLLHUP | POLLNVAL, 0};
 	pollFds.push_back(pollFd);
-	LOGGER.info("addNewClient", "New connection established with " + client.getHostname() + " on fd " + std::to_string(fd));
+	std::ostringstream logMessage;
+	logMessage << "New connection established with " << client.getHostname() << " on fd " << fd;
+	LOGGER.info("addNewClient", logMessage.str());
 }
 
 void Server::unexpectedDisconnectHandling(int fd) {
@@ -40,8 +42,9 @@ void Server::unexpectedDisconnectHandling(int fd) {
 
 void Server::ejectClient(int clientFd, int reason) {
 	std::vector<pollfd>::iterator it = pollFds.begin();
-
-	LOGGER.info("ejectClient", "Ejecting client on fd " + std::to_string(clientFd));
+	std::ostringstream logMessage;
+	logMessage << "Ejecting client on fd " << clientFd;
+	LOGGER.info("ejectClient", logMessage.str());
 	for (; it < pollFds.end(); it++) {
 		if ((*it).fd == clientFd) {
 			close(clientFd);
@@ -51,19 +54,24 @@ void Server::ejectClient(int clientFd, int reason) {
 		}
 	}
 	clients.erase(clientFd);
+	std::ostringstream logReason;
 
 	switch (reason) {
 		case LOSTCONNECTION:
-			LOGGER.info("ejectClient", "Client connection lost. (fd : " + std::to_string(clientFd) + ")");
+			logReason << "Client connection lost. (fd : " << clientFd << ")";
+			LOGGER.info("ejectClient", logReason.str());
 			break;
 		case QUITED:
-			LOGGER.info("ejectClient", "Client left. (fd : " + std::to_string(clientFd) + ")");
+			logReason << "Client left. (fd : " << clientFd << ")";
+			LOGGER.info("ejectClient", logReason.str());
 			break;
 		case KICKED:
-			LOGGER.info("ejectClient", "Client kicked. (fd : " + std::to_string(clientFd) + ")");
+			logReason << "Client kicked. (fd : " << clientFd << ")";
+			LOGGER.info("ejectClient", logReason.str());
 			break;
 		default:
-			LOGGER.info("ejectClient", "Client successfully ejected. (fd : " + std::to_string(clientFd) + ")");
+			logReason << "Client successfully ejected. (fd : " << clientFd << ")";
+			LOGGER.info("ejectClient", logReason.str());
 	}
 }
 
