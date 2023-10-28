@@ -56,7 +56,7 @@ void Server::ejectClient(int clientFd, int reason) {
 			break;
 		}
 	}
-	//clients.erase(clientFd);
+	clients.erase(clientFd);
 	std::ostringstream logReason;
 
 	switch (reason) {
