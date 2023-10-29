@@ -31,12 +31,13 @@ void Channel::setPassword(std::string password) { this->password = password; }
 void Channel::removePassword() { this->password = ""; };
 
 void Channel::removeClient(Client &client) {
+	LOGGER.info("removeClient", "removing client " + client.getNickname());
 	if (creator == &client) {
+		LOGGER.info("removeClient", "client is creator");
 		creator = NULL;
 	}
-	//if (clients.size() > 1)
-		clients.erase(&client);
 	if (clients.size() > 0) {
+		clients.erase(&client);
 		asureOperator();
 	}
 }
@@ -84,11 +85,10 @@ void Channel::initialize(std::string name, std::string password, Client &op) {
 void Channel::initialize(std::string name, Client &op) {
 	LOGGER.info("initialize", "Initializing channel " + name);
 	this->name = name;
-	this->clients.insert(std::make_pair(&op, 0));
+	this->clients.insert(std::make_pair(&op, USER_OPERATOR));
 	this->initialized = true;
 	this->modes.insert('t');
 	this->creator = &op;
-	setOperator(op.getNickname(), true);
 }
 
 void		 Channel::setUserLimit(unsigned int limit) { userLimit = limit; };
@@ -171,12 +171,17 @@ void Channel::removeInvited(std::string nickname) {
 };
 
 void Channel::asureOperator() {
+	LOGGER.info("asureOperator", "Checking the need for a new oper");
 	std::map<Client *, unsigned int>::iterator it;
 	it = clients.begin();
 	while (it != clients.end()) {
-		if (it->second & USER_OPERATOR) return;
+		if (it->second & USER_OPERATOR)
+			return;
 		it++;
 	}
-	it		   = clients.begin();
-	it->second = it->second | USER_OPERATOR;
+	it = clients.begin();
+	if (it != clients.end()) {
+		it->second = it->second | USER_OPERATOR;
+		LOGGER.info("asureOperator", "Setting " + it->first->getNickname() + " as a new operator");
+	}
 };
