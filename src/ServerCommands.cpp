@@ -100,8 +100,13 @@ void Server::privmsg(Client &client, Command &command) {
 
 		if (it == channels.end())
 			return client.setSendData(nosuchnick(client, command.args[0]));
-		else
-			return it->second.broadcast(client, ss.str(), false);
+		else {
+			Channel &ch = it->second;
+			if (ch.getClients().find(&client) == ch.getClients().end())
+				return client.setSendData(notonchannel(client, ch.getName()));
+			else
+				return ch.broadcast(client, ss.str(), false);
+		}
 	} else {
 		std::map<int, Client>::iterator it = clients.begin();
 
@@ -195,7 +200,7 @@ void Server::successfulJoin(Client &client, Channel &ch) {
 void Server::who(Client &client, Command &command) {
 	std::stringstream ss;
 
-	LOGGER.info("who", "Client " + client.getNickname() + " is trying to get info about " + command.args[0]);
+	LOGGER.info("who", "Client " + client.getNickname() + " is trying to get info about server");
 	if (command.args.size() < 1) {
 		client.setSendData(needmoreparams(client, "WHO"));
 		return;
@@ -584,7 +589,8 @@ void Server::kick(Client &client, Command &command) {
 	}
 	if (!(issuer->second & USER_OPERATOR))
 		return client.setSendData(chanoprivsneeded((*issuer->first), (*ch)));
-	ch->broadcast(client, kicksuccess(client, *ch, target->first->getNickname()), true);
+	std::string targetName = target->first->getNickname();
+	ch->broadcast(client, kicksuccess(client, *ch, targetName), true);
 	ch->removeClient(*target->first);
 	return;
 };
