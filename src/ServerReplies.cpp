@@ -470,13 +470,12 @@ std::string Server::kicksuccess(Client &client, Channel &ch, std::string target,
 	return ss.str();
 };
 
-std::string Server::usernotinchannel(Client &client, Channel &channel, std::string target) {
+std::string Server::usernotinchannel(Client &client, Channel &channel) {
 	std::stringstream ss;
 
 	LOGGER.info("usernotinchannel", "Sending usernotinchannel response to " + client.getNickname());
 	ss << ":localhost 441";
 	ss << " " << client.getNickname();
-	ss << " " << target;
 	ss << " " << channel.getName();
 	ss << " :They aren't on that";
 	ss << "\r\n";

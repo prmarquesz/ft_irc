@@ -131,7 +131,7 @@ class Server {
 		std::string 								inviterrpl(Client &issuer, Client &target, Channel &channel);
 		std::string 								inviteonlychan(Client &issuer, Channel &channel);
 		std::string 								channelisfull(Client &issuer, Channel &channel);
-		std::string 								usernotinchannel(Client &client, Channel &channel, std::string target);
+		std::string 								usernotinchannel(Client &client, Channel &channel);
 		std::string 								kicksuccess(Client &client, Channel &channel, std::string target, std::string reason);
 		std::string 								channelmodeis(Client &client, std::string channel);
 		std::string 								usermodeis(Channel &channel, Client &client, std::string modeStr);

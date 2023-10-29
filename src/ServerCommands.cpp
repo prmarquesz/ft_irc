@@ -579,7 +579,7 @@ void Server::kick(Client &client, Command &command) {
 	std::map<Client *, unsigned int>::iterator target;
 	target = ch->getClientByNick(command.args[1]);
 	if (target == ch->getClients().end()) {
-		return client.setSendData(usernotinchannel(client, (*ch), command.args[1]));
+		return client.setSendData(usernotinchannel(client, (*ch)));
 	}
 
 	std::map<Client *, unsigned int>::iterator issuer;
