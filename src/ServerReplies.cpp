@@ -458,14 +458,14 @@ std::string Server::chanoprivsneeded(int fd, Channel &channel) {
 	return ss.str();
 }
 
-std::string Server::kicksuccess(Client &client, Channel &ch, std::string target) {
+std::string Server::kicksuccess(Client &client, Channel &ch, std::string target, std::string reason) {
 	std::stringstream ss;
 
 	LOGGER.info("kicksuccess", "Sending kicksuccess response to " + client.getNickname());
 	ss << ":" << client.getNickname();
 	ss << " KICK " << ch.getName();
 	ss << " " << target;
-	ss << " :" << client.getNickname();
+	ss << " :" << reason;
 	ss << "\r\n";
 	return ss.str();
 };

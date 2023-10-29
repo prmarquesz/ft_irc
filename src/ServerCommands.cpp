@@ -590,7 +590,11 @@ void Server::kick(Client &client, Command &command) {
 	if (!(issuer->second & USER_OPERATOR))
 		return client.setSendData(chanoprivsneeded((*issuer->first), (*ch)));
 	std::string targetName = target->first->getNickname();
-	ch->broadcast(client, kicksuccess(client, *ch, targetName), true);
+	std::string reason = client.getNickname();
+	if (!command.args.at(2).empty()) {
+		reason = command.args.at(2).find(':') == 0 ? command.args.at(2).substr(1) : command.args.at(2);
+	}
+	ch->broadcast(client, kicksuccess(client, *ch, targetName, reason), true);
 	ch->removeClient(*target->first);
 	return;
 };
