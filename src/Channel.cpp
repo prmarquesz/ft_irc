@@ -181,7 +181,14 @@ void Channel::asureOperator() {
 	}
 	it = clients.begin();
 	if (it != clients.end()) {
-		it->second = it->second | USER_OPERATOR;
+		this->setOperator(it->first->getNickname(), true);
 		LOGGER.info("asureOperator", "Setting " + it->first->getNickname() + " as a new operator");
+		std::stringstream ss;
+		ss << ":" << it->first->getNickname();
+		ss << " MODE";
+		ss << " " << this->getName();
+		ss << " " << "+o " << it->first->getNickname();
+		ss << "\r\n";
+		this->broadcast(*it->first, ss.str(), true);
 	}
 };
