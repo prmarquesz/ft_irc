@@ -291,7 +291,15 @@ void Server::quit(Client &client, Command &command) {
 		ss << " QUIT :Gone to have lunch";
 	}
 	ss << "\r\n";
-
+	std::vector<Channel *>::iterator it = client.getChannels().begin();
+	for (; it != client.getChannels().end(); it++) {
+		(*it)->removeClient(client);
+		std::map<Client *, uint>::iterator itb = (*it)->getClients().begin();
+		std::map<Client *, uint>::iterator ite = (*it)->getClients().end();
+		for (; itb != ite; itb++) {
+			itb->first->setSendData(ss.str());
+		}
+	}
 	client.setToDisconnect(true);
 }
 
