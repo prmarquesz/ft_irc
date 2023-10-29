@@ -66,4 +66,5 @@ class Channel {
 
 		void 										initialize(std::string name, std::string password, Client &op);
 		void 										initialize(std::string name, Client &op);
+		void 										broadcastNicknameChange(Client &client, const std::string &newNickname);
 };

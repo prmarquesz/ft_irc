@@ -50,6 +50,10 @@ void Server::nick(Client &client, Command &command) {
 	client.setRegistration(NICK_FLAG);
 	client.setSendData(changednickname(client, client.getNickname()));
 	LOGGER.info("nick", "Client " + client.getNickname() + " changed nickname");
+    std::vector<Channel *> channels = client.getChannels();
+    for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+        (*it)->broadcastNicknameChange(client, command.args[0]);
+    }
 }
 
 void Server::oper(Client &client, Command &command) {
