@@ -47,12 +47,9 @@ void Server::ejectClient(int clientFd, int reason) {
 	LOGGER.info("ejectClient", logMessage.str());
 	for (; it < pollFds.end(); it++) {
 		if ((*it).fd == clientFd) {
-			//if (fcntl(clientFd, F_GETFD) == false)
-			//{
-				close(clientFd);
-				std::memset(&(*it), 0, sizeof(pollfd));
-				pollFds.erase(it);
-			//}
+			close(clientFd);
+			std::memset(&(*it), 0, sizeof(pollfd));
+			pollFds.erase(it);
 			break;
 		}
 	}

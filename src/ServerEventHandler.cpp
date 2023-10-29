@@ -18,7 +18,6 @@ void Server::handleClientEvents() {
 			std::vector<Command> commands = parseCommands(data);
 			executeCommands(client, commands);
 		} else if ((*it).revents & POLLOUT) {
-			// LOGGER.info("clientEventHandling", "POLLOUT caught");
 			sendDataThroughSocket(client);
 		} else if ((*it).revents & POLLERR) {
 			LOGGER.info("clientEventHandling", "POLLERR caught");

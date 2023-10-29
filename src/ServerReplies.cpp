@@ -199,7 +199,6 @@ std::string Server::namreply(Client &client, Channel &channel, bool found) {
 		ss << ":localhost 353 " << client.getNickname();
 		ss << " = " << channel.getName() << " :";
 		if (creator) {
-			LOGGER.debug("namreply", "criador é " + creator->getNickname());
 			ss << "!" << creator->getNickname() << " ";
 		}
 
@@ -207,15 +206,7 @@ std::string Server::namreply(Client &client, Channel &channel, bool found) {
 			channel.getClients().begin();
 
 		while (cli != channel.getClients().end()) {
-			//if (creator != NULL) {
-			//	if (cli->first == creator) {
-			//		LOGGER.debug("namreply", "true");
-			//		cli++;
-			//		continue;
-			//	}
-			//}
 			if (cli->second & USER_OPERATOR) {
-				LOGGER.debug("namreply", "é operador");
 				ss << "@";
 			}
 			ss << (*cli->first).getNickname() << " ";
@@ -466,7 +457,7 @@ std::string Server::chanoprivsneeded(int fd, Channel &channel) {
 
 	return ss.str();
 }
-// Success response for KICK command
+
 std::string Server::kicksuccess(Client &client, Channel &ch, std::string target) {
 	std::stringstream ss;
 

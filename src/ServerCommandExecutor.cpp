@@ -16,17 +16,17 @@ void Server::executeCommands(Client &client, std::vector<Command> &commands) {
 }
 
 void Server::executeCommand(Client &client, Command &command) {
-	if (command.cmd == "NICK") { 		// dont update on front
+	if (command.cmd == "NICK") {
 		nick(client, command);
-	} else if (command.cmd == "PASS") { // ok cmd
+	} else if (command.cmd == "PASS") {
 		pass(client, command);
-	} else if (command.cmd == "USER") { // ok cmd
+	} else if (command.cmd == "USER") {
 		user(client, command);
 	} else if (command.cmd == "OPER") {
 		oper(client, command);
-	} else if (command.cmd == "JOIN") { // ok
+	} else if (command.cmd == "JOIN") {
 		join(client, command);
-	} else if (command.cmd == "QUIT") { // ok
+	} else if (command.cmd == "QUIT") {
 		quit(client, command);
 	} else if (command.cmd == "PING") {
 		ping(client, command);
@@ -34,19 +34,19 @@ void Server::executeCommand(Client &client, Command &command) {
 		mode(client, command);
 	} else if (command.cmd == "PRIVMSG") {
 		privmsg(client, command);
-	} else if (command.cmd == "TOPIC") { // ok
+	} else if (command.cmd == "TOPIC") {
 		topic(client, command);
 	} else if (command.cmd == "NOTICE") {
 		notice(client, command);
 	} else if (command.cmd == "PART") {
 		part(client, command);
-	} else if (command.cmd == "WHO") { // segfault
+	} else if (command.cmd == "WHO") {
 		who(client, command);
 	} else if (command.cmd == "WHOIS") {
 		whois(client, command);
-	} else if (command.cmd == "KICK") { // segfault
+	} else if (command.cmd == "KICK") {
 		kick(client, command);
-	} else if (command.cmd == "INVITE") { // ok
+	} else if (command.cmd == "INVITE") {
 		invite(client, command);
 	} else {
 		client.setSendData(unknowncommand(client, command.cmd));
