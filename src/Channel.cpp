@@ -194,15 +194,13 @@ void Channel::asureOperator() {
 };
 
 void Channel::broadcastNicknameChange(Client &client, const std::string &newNickname) {
-    std::stringstream message;
-    message << ":localhost 001 " << client.getNickname() << " NICK " << newNickname << "\r\n";
-
+    std::stringstream ss;
+    ss << ":" << client.getNickname() << " NICK " << newNickname << "\r\n";
+    
     std::map<Client *, unsigned int>::iterator it = clients.begin();
     for (; it != clients.end(); ++it) {
-        Client *otherClient = it->first;
-
-        if (otherClient != &client) {
-            otherClient->setSendData(message.str());
+        if (it->first != &client) {
+            (*it->first).setSendData(ss.str());
         }
     }
 };
