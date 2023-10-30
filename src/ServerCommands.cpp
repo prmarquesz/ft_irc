@@ -46,9 +46,14 @@ void Server::nick(Client &client, Command &command) {
 		client.setSendData(nicknameinuse(client, command.args[0]));
 		return;
 	}
+	std::string oldNick = client.getNickname();
 	client.setNickname(command.args[0]);
+	if (client.getRegistration() & NICK_FLAG) {
+		client.setSendData(":localhost 001 " + client.getNickname() + "\r\n");
+	} else {
+		client.setSendData(changednickname(client, client.getNickname()));
+	}
 	client.setRegistration(NICK_FLAG);
-	client.setSendData(changednickname(client, client.getNickname()));
 	LOGGER.info("nick", "Client " + client.getNickname() + " changed nickname");
 }
 
@@ -195,6 +200,15 @@ void Server::successfulJoin(Client &client, Channel &ch) {
 	}
 
 	client.setSendData(namreply(client, ch, true));
+	std::vector<Channel *>::iterator it = client.getChannels().begin();
+	for (; it != client.getChannels().end(); it++) {
+		std::map<Client *, uint>::iterator itb = (*it)->getClients().begin();
+		std::map<Client *, uint>::iterator ite = (*it)->getClients().end();
+		for (; itb != ite; itb++) {
+			if (itb->first->getNickname() != client.getNickname()) continue;
+				itb->first->setSendData(namreply(*itb->first, **it, true));
+		}
+	}
 };
 
 void Server::who(Client &client, Command &command) {
