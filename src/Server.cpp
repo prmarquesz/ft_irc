@@ -4,7 +4,7 @@ bool Server::online = true;
 
 Server::~Server() {
 	for (std::vector<pollfd>::iterator it = pollFds.begin(); it != pollFds.end(); it++) {
-		if (fcntl((*it).fd, F_GETFD) == false) {
+		if (fcntl((*it).fd, F_SETFL, O_NONBLOCK) == false) {
 			close((*it).fd);
 		}
     }
