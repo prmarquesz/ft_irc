@@ -34,9 +34,9 @@ void Server::sendDataThroughSocket(Client &client) {
 		LOGGER.info("sendDataThroughSocket", logMessage.str());
 		bytesSent = send(client.getFd(), client.getSendData().c_str(), client.getSendData().size(), 0);
 		if (bytesSent < 0) {
-			LOGGER.error("Failed", "");
+			LOGGER.error("sendDataThroughSocket", "Failed to send data");
 		} else {
-			LOGGER.info("Sent", client.getSendData());
+			LOGGER.info("sendDataThroughSocket", client.getSendData());
 			client.resetSendData(bytesSent);
 		}
 	}
