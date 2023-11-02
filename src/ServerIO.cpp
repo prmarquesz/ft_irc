@@ -12,7 +12,7 @@ std::string Server::receiveDataFromSocket(int fd) {
 	while (keepReading) {
 		std::memset(buffer, 0, BUFFER_SIZE);
 		bytesReceived = recv(fd, buffer, BUFFER_SIZE, 0);
-		if (bytesReceived < 0) {
+		if (bytesReceived <= 0) {
 			unexpectedDisconnectHandling(fd);
 			keepReading = false;
 		} else {
