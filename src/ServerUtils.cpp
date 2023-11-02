@@ -34,10 +34,15 @@ void Server::trimAll(std::string& str) {
 	str = str.substr(start, end - start);
 }
 
+void Server::cleanEndOfTransmission(std::string &str) {
+    str.erase(std::remove(str.begin(), str.end(), '\4'), str.end());
+}
+
 Command Server::messageToCommand(std::string source) {
 	Command c;
 	std::string token;
 
+	cleanEndOfTransmission(source);
 	if (source[0] == ':') {
 		std::istringstream sourceStream(source);
 		std::getline(sourceStream, c.prefix, ' ');
