@@ -145,6 +145,7 @@ class Server {
 		Command										messageToCommand(std::string source);
 		void										trimStart(std::string &str);
 		void										trimAll(std::string &str);
+		void										cleanEndOfTransmission(std::string &str);
 
 	public:
 		~Server(void);
