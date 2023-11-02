@@ -30,12 +30,18 @@ void Server::unexpectedDisconnectHandling(int fd) {
 	LOGGER.info("unexpectedDisconnectHandling", "Handling unexpected disconnection...");
 	if (client.getRegistration() == (NICK_FLAG | USER_FLAG | PASS_FLAG)) {
 		ss << ":" << client.getNickname();
-		ss << "!" << client.getUsername();
-		ss << "@" << client.getHostname();
 		ss << " QUIT: Client exited unexpectedly";
 		ss << "\r\n";
 
-		broadcastMessage(fd, ss.str());
+		std::vector<Channel *>::iterator it = client.getChannels().begin();
+		for (; it != client.getChannels().end(); it++) {
+			(*it)->removeClient(client);
+			std::map<Client *, uint>::iterator itb = (*it)->getClients().begin();
+			std::map<Client *, uint>::iterator ite = (*it)->getClients().end();
+			for (; itb != ite; itb++) {
+				itb->first->setSendData(ss.str());
+			}
+		}
 	}
 	client.setToDisconnect(true);
 }
