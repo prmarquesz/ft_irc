@@ -269,7 +269,7 @@ void Server::topic(Client &client, Command &command) {
 		}
 	} else {
 		ch.setTopic(command.args[1]);
-		return client.setSendData(topic(client, ch));
+		return ch.broadcast(client, topic(client, ch), true);;
 	}
 }
 
