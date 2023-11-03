@@ -446,11 +446,13 @@ void Server::channelMode(Client &client, Command &command) {
 	int				  lim = 0;
 	switch (usrFlag) {
 		case 'l':
-			ss << command.args[2];
-			if (!(ss >> lim) || lim <= 0) {
-				return (client.setSendData(needmoreparams(client, "MODE")));
-			}
-			ch.setUserLimit(lim);
+			if (on) {
+				ss << command.args[2];
+				if (!(ss >> lim) || lim <= 0) {
+					return (client.setSendData(needmoreparams(client, "MODE")));
+				}
+				ch.setUserLimit(lim);
+			} 
 			ch.toggleMode('l', on);
 			modesChanged += "l " + command.args[2];
 			break;

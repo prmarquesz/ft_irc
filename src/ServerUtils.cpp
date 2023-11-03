@@ -140,7 +140,7 @@ bool Server::evalChanMode(Client &client, std::vector<std::string> args) {
 		if (prefix == '-' && modes.at(0) == 'k') {
 			return true;
 		}
-		if (paramPair.second > 1 || args.size() < 3) {
+		if (paramPair.second > 1 || args.size() < 2) {
 			client.setSendData(needmoreparams(client, "MODE"));
 			return false;
 		}
