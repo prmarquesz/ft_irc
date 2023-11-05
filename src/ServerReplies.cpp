@@ -477,7 +477,7 @@ std::string Server::usernotinchannel(Client &client, Channel &channel) {
 	ss << ":localhost 441";
 	ss << " " << client.getNickname();
 	ss << " " << channel.getName();
-	ss << " :They aren't on that";
+	ss << " :They aren't on that channel";
 	ss << "\r\n";
 
 	return ss.str();
@@ -534,14 +534,13 @@ std::string Server::nosuchnick(Client &client, std::string name) {
 	return ss.str();
 }
 
-std::string Server::inviting(Client &issuer, Client &target, Channel &channel) {
+std::string Server::inviting(Client &issuer, Channel &channel) {
 	std::stringstream ss;
 
 	LOGGER.info("inviting", "Sending inviting response to " + issuer.getNickname());
-	ss << ":localhost 341";
-	ss << " " << issuer.getNickname();
-	ss << " " << target.getNickname();
+	ss << ":localhost 341 " << issuer.getNickname();
 	ss << " " << channel.getName();
+	ss << " " << issuer.getNickname();
 	ss << "\r\n";
 
 	return ss.str();

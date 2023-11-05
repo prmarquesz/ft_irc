@@ -127,7 +127,7 @@ class Server {
 		std::string 								nosuchnick(Client &client, std::string name);
 		std::string 								chanoprivsneeded(int fd, Channel &channel);
 		std::string 								chanoprivsneeded(Client &client, Channel &channel);
-		std::string 								inviting(Client &issuer, Client &target, Channel &channel);
+		std::string 								inviting(Client &issuer, Channel &channel);
 		std::string 								inviterrpl(Client &issuer, Client &target, Channel &channel);
 		std::string 								inviteonlychan(Client &issuer, Channel &channel);
 		std::string 								channelisfull(Client &issuer, Channel &channel);

@@ -33,12 +33,7 @@ void Server::removeClientFromChannel(Client &client, Channel &channel, std::stri
 		ss << " " << message;
 		ss << "\r\n";
 
-		std::map<Client *, uint>::iterator itb = channel.getClients().begin();
-		std::map<Client *, uint>::iterator ite = channel.getClients().end();
-
-		for (; itb != ite; itb++) {
-			itb->first->setSendData(ss.str());
-		}
+		channel.broadcast(client, ss.str(), false);
 	}
 };
 

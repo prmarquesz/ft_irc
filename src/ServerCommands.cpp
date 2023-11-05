@@ -1,7 +1,7 @@
 #include <Server.hpp>
 
 void Server::pass(Client &client, Command &command) {
-	LOGGER.info("pass", "Client " + client.getNickname() + " is trying to authenticate with password " + command.args[0]);
+	LOGGER.info("pass", "Client " + client.getNickname() + " is trying to authenticate");
 	if (command.args.size() == 0) {
 		client.setSendData(needmoreparams(client, "PASS"));
 		return;
@@ -18,7 +18,7 @@ void Server::pass(Client &client, Command &command) {
 }
 
 void Server::user(Client &client, Command &command) {
-	LOGGER.info("user", "Client " + client.getNickname() + " is trying to authenticate with username " + command.args[0]);
+	LOGGER.info("user", "Client " + client.getNickname() + " is trying registry username");
 	if (command.args.size() < 4) {
 		client.setSendData(needmoreparams(client, "USER"));
 		return;
@@ -35,7 +35,7 @@ void Server::user(Client &client, Command &command) {
 }
 
 void Server::nick(Client &client, Command &command) {
-	LOGGER.info("nick", "Client " + client.getNickname() + " is trying to change nickname to " + command.args[0]);
+	LOGGER.info("nick", "Client " + client.getNickname() + " is trying to change nickname");
 	if (command.args.size() == 0) {
 		client.setSendData(nonicknamegiven(client));
 		return;
@@ -79,7 +79,7 @@ void Server::privmsg(Client &client, Command &command) {
 	std::stringstream ss;
 	std::string		  ch_prefix = CHANNEL_PREFIX;
 
-	LOGGER.info("privmsg", "Client " + client.getNickname() + " is trying to send a message to " + command.args[0]);
+	LOGGER.info("privmsg", "Client " + client.getNickname() + " is trying to send a privmsg");
 	if (command.args.size() == 1) {
 		if (ch_prefix.find(command.args[0].at(0)) != std::string::npos)
 			return client.setSendData(norecipient(client, "PRIVMSG"));
@@ -127,12 +127,11 @@ void Server::privmsg(Client &client, Command &command) {
 }
 
 void Server::join(Client &client, Command &command) {
-	LOGGER.info("join", "Client " + client.getNickname() + " is trying to join channel " + command.args[0]);
 	if (command.args.size() < 1) {
 		client.setSendData(needmoreparams(client, "JOIN"));
 		return;
 	}
-
+	LOGGER.info("join", "Client " + client.getNickname() + " is trying to join channel " + command.args[0]);
 	if (!validChannelName(command.args[0])) {
 		client.setSendData(nosuchchannel(client, command.args[0]));
 		return;
@@ -174,6 +173,7 @@ void Server::join(Client &client, Command &command) {
 	if (sentPassword) {
 		if (!ch.evalPassword(command.args[1]))
 			return client.setSendData(badchannelkey(client, ch.getName()));
+		
 	} else {
 		if (!ch.evalPassword(""))
 			return client.setSendData(badchannelkey(client, ch.getName()));
@@ -198,17 +198,7 @@ void Server::successfulJoin(Client &client, Channel &ch) {
 	} else {
 		client.setSendData(notopic(client, ch));
 	}
-
-	client.setSendData(namreply(client, ch, true));
-	std::vector<Channel *>::iterator it = client.getChannels().begin();
-	for (; it != client.getChannels().end(); it++) {
-		std::map<Client *, uint>::iterator itb = (*it)->getClients().begin();
-		std::map<Client *, uint>::iterator ite = (*it)->getClients().end();
-		for (; itb != ite; itb++) {
-			if (itb->first->getNickname() != client.getNickname()) continue;
-				itb->first->setSendData(namreply(*itb->first, **it, true));
-		}
-	}
+	ch.broadcast(client, namreply(client, ch, true), true);
 };
 
 void Server::who(Client &client, Command &command) {
@@ -232,11 +222,11 @@ void Server::who(Client &client, Command &command) {
 void Server::topic(Client &client, Command &command) {
 	std::stringstream ss;
 
-	LOGGER.info("topic", "Client " + client.getNickname() + " is trying to change topic of channel " + command.args[0]);
 	if (command.args.size() < 1) {
 		client.setSendData(needmoreparams(client, "TOPIC"));
 		return;
 	}
+	LOGGER.info("topic", "Client " + client.getNickname() + " is trying to change topic of channel " + command.args[0]);
 
 	Channel &ch = channels[toIrcUpperCase(command.args[0])];
 
@@ -276,7 +266,7 @@ void Server::topic(Client &client, Command &command) {
 void Server::whois(Client &client, Command &command) {
 	std::stringstream ss;
 
-	LOGGER.info("whois", "Client " + client.getNickname() + " is trying to get info about " + command.args[0]);
+	LOGGER.info("whois", "Client " + client.getNickname() + " is trying to get info");
 	if (command.args.size() < 1) {
 		client.setSendData(needmoreparams(client, "WHOIS"));
 		return;
@@ -308,12 +298,9 @@ void Server::quit(Client &client, Command &command) {
 	std::vector<Channel *>::iterator it = client.getChannels().begin();
 	for (; it != client.getChannels().end(); it++) {
 		(*it)->removeClient(client);
-		std::map<Client *, uint>::iterator itb = (*it)->getClients().begin();
-		std::map<Client *, uint>::iterator ite = (*it)->getClients().end();
-		for (; itb != ite; itb++) {
-			itb->first->setSendData(ss.str());
-		}
+		(*it)->broadcast(client, ss.str(), false);
 	}
+	LOGGER.debug("quit", ss.str());
 	client.setToDisconnect(true);
 }
 
@@ -333,10 +320,10 @@ void Server::ping(Client &client, Command &command) {
 void Server::part(Client &client, Command &command) {
 	std::stringstream ss;
 
-	LOGGER.info("part", "Client " + client.getNickname() + " is trying to leave channel " + command.args[0]);
 	if (command.args.size() < 1) {
 		return client.setSendData(needmoreparams(client, "PART"));
 	}
+	LOGGER.info("part", "Client " + client.getNickname() + " is trying to leave channel");
 
 	std::map<std::string, Channel>::iterator it =
 		channels.find(toIrcUpperCase(command.args[0]));
@@ -364,7 +351,7 @@ void Server::part(Client &client, Command &command) {
 void Server::notice(Client &client, Command &command) {
 	std::stringstream ss;
 
-	LOGGER.info("notice", "Client " + client.getNickname() + " is trying to send a notice to " + command.args[0]);
+	LOGGER.info("notice", "Client " + client.getNickname() + " is trying to send a notice");
 	if (command.args.size() < 2) {
 		return;
 	}
@@ -404,10 +391,9 @@ void Server::channelMode(Client &client, Command &command) {
 	if (it == channels.end()) {
 		return (client.setSendData(nosuchchannel(client, "MODE")));
 	}
-	Channel								   &ch = it->second;
+	Channel	&ch = it->second;
 	std::map<Client *, unsigned int>::iterator clients =
 		ch.getClientByNick(client.getNickname());
-
 	if (!(clients->second & USER_OPERATOR)) {
 		client.setSendData(chanoprivsneeded(client.getFd(), ch));
 		return;
@@ -436,9 +422,8 @@ void Server::channelMode(Client &client, Command &command) {
 	for (std::size_t i = 0; i < toggleMode.size(); i++) {
 		modeIt = chFlags.find(toggleMode.at(i));
 		if (modeIt != chFlags.end()) {
-			if (ch.toggleMode(*modeIt, on)) {
+			if (ch.toggleMode(*modeIt, on))
 				modesChanged += *modeIt;
-			}
 		}
 	}
 
@@ -515,10 +500,11 @@ void Server::userMode(Client &client, Command &command) {
 
 void Server::mode(Client &client, Command &command) {
 	std::string ch_prefix = CHANNEL_PREFIX;
-
-	LOGGER.info("mode", "Client " + client.getNickname() + " is trying to change mode to " + command.args[0]);
+	LOGGER.info("mode", "Client " + client.getNickname() + " is trying to change mode");
 	if (command.args.size() < 2) {
-		if (ch_prefix.find(command.args[0].at(0)) != std::string::npos)
+		if (command.args.empty())
+			return client.setSendData(needmoreparams(client, "MODE"));
+		if (ch_prefix.find(command.args.at(0).at(0)) != std::string::npos)
 			return client.setSendData(channelmodeis(client, command.args[0]));
 		else {
 			if (toIrcUpperCase(client.getNickname()) == toIrcUpperCase(command.args[0]))
@@ -527,7 +513,6 @@ void Server::mode(Client &client, Command &command) {
 				return client.setSendData(usersdontmatch(client));
 		}
 	}
-
 	if (ch_prefix.find(command.args[0].at(0)) != std::string::npos) {
 		if (evalChanMode(client, command.args)) {
 			return channelMode(client, command);
@@ -573,7 +558,7 @@ bool Server::validChannelName(std::string name) {
 	std::string prefixes = CHANNEL_PREFIX;
 
 	if (prefixes.find(name.at(0)) == std::string::npos) return false;
-	if (name.length() > 50) return false;
+	if (name.length() > 200) return false;
 
 	std::string insensitiveName = toIrcUpperCase(name);
 	std::string forbiddenChars	= " \a,:";
@@ -586,10 +571,10 @@ bool Server::validChannelName(std::string name) {
 };
 
 void Server::kick(Client &client, Command &command) {
-	LOGGER.info("kick", "Client " + client.getNickname() + " is trying to kick " + command.args[1] + " from channel " + command.args[0]);
 	if (command.args.size() < 2) {
 		return client.setSendData(needmoreparams(client, "KICK"));
 	}
+	LOGGER.info("kick", "Client " + client.getNickname() + " is trying to kick " + command.args[1] + " from channel " + command.args[0]);
 	Channel *ch = NULL;
 
 	std::map<std::string, Channel>::iterator it = getChannelByName(command.args[0]);
@@ -624,11 +609,10 @@ void Server::kick(Client &client, Command &command) {
 };
 
 void Server::invite(Client &client, Command &command) {
-	LOGGER.info("invite", "Client " + client.getNickname() + " is trying to invite " + command.args[0] + " to channel " + command.args[1]);
 	if (command.args.size() < 2) {
 		return client.setSendData(needmoreparams(client, "INVITE"));
 	}
-
+	LOGGER.info("invite", "Client " + client.getNickname() + " is trying to invite " + command.args[0] + " to channel " + command.args[1]);
 	std::map<std::string, Channel>::iterator ch_it;
 	ch_it = this->getChannelByName(command.args[1]);
 	if (ch_it == channels.end()) {
@@ -656,6 +640,6 @@ void Server::invite(Client &client, Command &command) {
 	}
 
 	chan->addInvite(target->getNickname());
-	client.setSendData(inviting(client, (*target), (*chan)));
+	client.setSendData(inviting(client, (*chan)));
 	return target->setSendData(inviterrpl(client, (*target), (*chan)));
 }
