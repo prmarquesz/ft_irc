@@ -432,15 +432,21 @@ void Server::channelMode(Client &client, Command &command) {
 	switch (usrFlag) {
 		case 'l':
 			if (on) {
-				ss << command.args[2];
-				if (!(ss >> lim) || lim <= 0) {
-					return (client.setSendData(needmoreparams(client, "MODE")));
-				}
-				ch.setUserLimit(lim);
-			} 
-			ch.toggleMode('l', on);
-			modesChanged += "l " + command.args[2];
-			break;
+                if (command.args.size() < 3) {
+                    return (client.setSendData(needmoreparams(client, "MODE")));
+                }
+                ss << command.args[2];
+                if (!(ss >> lim) || lim <= 0) {
+                    return (client.setSendData(needmoreparams(client, "MODE")));
+                }
+                ch.setUserLimit(lim);
+                modesChanged += "l " + command.args[2];
+            } else {
+                ch.setUserLimit(0);
+                modesChanged += "l *";
+            }
+            ch.toggleMode('l', on);
+            break;
 		case 'o':
 			if (ch.setOperator(command.args[2], on)) {
 				modesChanged += "o " + command.args[2];
@@ -464,7 +470,6 @@ void Server::channelMode(Client &client, Command &command) {
 		default:
 			break;
 	}
-
 	if (modesChanged.size() > 1)
 		return ch.broadcast(client, usermodeis(ch, client, modesChanged), true);
 }
