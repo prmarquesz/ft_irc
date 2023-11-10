@@ -137,7 +137,7 @@ class Server {
 		std::string 								usermodeis(Channel &channel, Client &client, std::string modeStr);
 		std::string 								usermodeis(Client &client, std::string modeStr);
 		std::string 								usermodeis(Client &client);
-
+		friend class 								ServerTestAPI;
 		
 		/* server utils */
 		std::string									getDatetime(void);
